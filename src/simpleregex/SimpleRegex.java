@@ -17,7 +17,7 @@ public class SimpleRegex {
         public List<String> findMatches(File file, String ptrn){
             List<String> arr = new ArrayList<>();
             Pattern pattern = Pattern.compile(ptrn);
-            Matcher matcher = null;
+            Matcher matcher;
 
             try {
                 BufferedReader br = new BufferedReader(new FileReader(file));
@@ -50,14 +50,19 @@ public class SimpleRegex {
         }
 
     }
+
     public static void main(String[] args) {
         
         File file = new File("d:\\test.txt");
-        String pattern = "\\d*[24680](?![13579])";
-        
+
+        //pattern1 allows preceding/following text to join an even number, i.e. "text.10" or "10.text"
+        String pattern1 = "(?<=(^|[^\\w.]|(\\D\\.)))(?=\\d*[02468]($|[^.\\w]|(\\.\\D)))\\d*[02468]";
+        //pattern2 is more strict and looks only for even numbers not surrounded with periods
+        String pattern2 = "(?<=(^|[^\\w.]))(?=\\d*[02468]($|[^.\\w]))\\d*[02468]";
+
         SimpleRegex.Match regEx = new SimpleRegex().new Match();
-        List<String> result = regEx.findMatches(file, pattern);
-        
+        List<String> result = regEx.findMatches(file, pattern2);
+
         for(String line : result){
             System.out.println(line);
         }
